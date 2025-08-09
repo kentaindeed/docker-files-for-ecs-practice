@@ -1,7 +1,7 @@
 FROM php:8.2-fpm-bullseye
 
 
-RUN mkdir -p /var/www/vhosts/example.com/public
+RUN mkdir -p /var/www/vhosts/example.com/public_html
 RUN touch /usr/local/etc/php-fpm.d/zzz-www.conf
 
 COPY ./zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
@@ -22,7 +22,7 @@ ENV COMPOSER_HOME /composer
 ENV PATH $PATH:/composer/vendor/bin
 
 # WorkDir Path setting
-WORKDIR /var/www/html/public_html
+WORKDIR /var/www/vhosts/example.com/public_html
 
 # Laravel Package install
 RUN composer global require "laravel/installer"

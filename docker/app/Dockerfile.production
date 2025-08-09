@@ -1,0 +1,52 @@
+FROM php:8.2-fpm-bullseye
+
+# 作業ディレクトリを設定
+WORKDIR /var/www/vhosts/example.com/public_html
+
+# 必要なディレクトリを作成
+RUN mkdir -p /var/www/vhosts/example.com/public_html
+RUN touch /usr/local/etc/php-fpm.d/zzz-www.conf
+
+# PHP-FPM設定をコピー
+COPY ./docker/app/zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
+
+# パッケージとライブラリをインストール
+RUN apt -y update
+RUN apt install -y zlib1g-dev vim libzip-dev unzip git
+RUN docker-php-ext-install zip pdo_mysql
+
+# Composerをインストール
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_HOME=/composer
+ENV PATH=$PATH:/composer/vendor/bin
+
+# Laravelアプリケーションコードをコピー
+# ビルドコンテキストを docker/app から プロジェクトルートに変更する必要があります
+COPY ./src /var/www/vhosts/example.com/public_html
+
+# プロダクション環境用の.envファイルをコピー
+COPY ./src/.env.production /var/www/vhosts/example.com/public_html/.env
+
+# Composerの依存関係をインストール（本番環境用）
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# ファイル権限を設定
+RUN chown -R www-data:www-data /var/www/vhosts/example.com/public_html
+RUN chmod -R 775 /var/www/vhosts/example.com/public_html/storage
+RUN chmod -R 775 /var/www/vhosts/example.com/public_html/bootstrap/cache
+
+# Laravel設定の最適化
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+
+# ポート9000を公開
+EXPOSE 9000
+
+# PHP-FPMを起動
+CMD ["php-fpm"]
