@@ -25,31 +25,38 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_HOME=/composer
 ENV PATH=$PATH:/composer/vendor/bin
 
+# 本番環境用の環境変数を設定（Pail無効化）
+ENV APP_ENV=production
+ENV PAIL_ENABLED=false
+
 # Laravelアプリケーションコードをコピー
-# ビルドコンテキストを docker/app から プロジェクトルートに変更する必要があります
 COPY ./src /usr/share/nginx/html
 
 # プロダクション環境用の.envファイルをコピー
 COPY ./src/.env.production /usr/share/nginx/html/.env
 
-# Composerの依存関係をインストール（本番環境用）
-# RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Composerの依存関係をインストール（本番環境用、Pailを除外）
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Laravel設定の最適化（パッケージ検出を再実行）
 RUN php artisan package:discover --ansi
 
 # ファイル権限を設定
-RUN chown -R www-data:www-data /usr/share/nginx/html/
+RUN chown -R www-data:www-data /var/www/vhosts/example.com/public_html
 RUN chmod -R 775 /usr/share/nginx/html/storage
 RUN chmod -R 775 /usr/share/nginx/html/bootstrap/cache
 
 # Laravel設定の最適化
 RUN php artisan config:cache
 RUN php artisan route:cache
-# RUN php artisan view:cache
+RUN php artisan view:cache
+
+# スタートアップスクリプトをコピー
+COPY ./docker/app/start-production.sh /usr/local/bin/start-production.sh
+RUN chmod +x /usr/local/bin/start-production.sh
 
 # ポート9000を公開
 EXPOSE 9000
 
-# PHP-FPMを起動
-CMD ["php-fpm"]
+# カスタムスタートアップスクリプトを使用
+CMD ["/usr/local/bin/start-production.sh"]

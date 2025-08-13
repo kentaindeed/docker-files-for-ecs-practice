@@ -49,7 +49,6 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
       TZ: 'Asia/Tokyo'
     volumes:
       - "db-volume:/var/lib/mysql"
