@@ -92,22 +92,22 @@ images:
 
 # Deploy to Cloud Run (deploy nginx image)
 # デプロイプレビュー中
-#   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-#     entrypoint: gcloud
-#     args:
-#       [
-#         'run','deploy','$_SERVICE_NAME',
-#         '--image','gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA',
-#         '--platform','managed',
-#         '--region','$_REGION',
-#         '--allow-unauthenticated',
-#         '--port','8080',
-#         '--quiet'
-#       ]
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      [
+        'run','deploy','$_SERVICE_NAME',
+        '--image','gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA',
+        '--platform','managed',
+        '--region','$_REGION',
+        '--allow-unauthenticated',
+        '--port','8080',
+        '--quiet'
+      ]
 
-# substitutions:
-#   _SERVICE_NAME: ecs-laravel
-#   _REGION: asia-northeast1
+substitutions:
+  _SERVICE_NAME: ecs-laravel
+  _REGION: asia-northeast1
 
 options:
   logging: CLOUD_LOGGING_ONLY
