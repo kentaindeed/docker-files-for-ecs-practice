@@ -9,12 +9,19 @@ steps:
         '-t','gcr.io/$PROJECT_ID/ecs-laravel-app:latest',
         '.'
       ]
+    options:
+      logging: CLOUD_LOGGING_ONLY
 
   # Push app image (both tags)
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-app:$SHORT_SHA']
+    options:
+      logging: CLOUD_LOGGING_ONLY
+
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-app:latest']
+    options:
+      logging: CLOUD_LOGGING_ONLY
 
   # Build nginx image
   - name: 'gcr.io/cloud-builders/docker'
@@ -26,12 +33,19 @@ steps:
         '-t','gcr.io/$PROJECT_ID/ecs-laravel-nginx:latest',
         '.'
       ]
+    options:
+      logging: CLOUD_LOGGING_ONLY
 
   # Push nginx image (both tags)
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA']
+    options:
+      logging: CLOUD_LOGGING_ONLY
+
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-nginx:latest']
+    options:
+      logging: CLOUD_LOGGING_ONLY
 
   # Build mysql image
   - name: 'gcr.io/cloud-builders/docker'
@@ -43,12 +57,19 @@ steps:
         '-t','gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest',
         '.'
       ]
+    options:
+      logging: CLOUD_LOGGING_ONLY
 
   # Push mysql image (both tags)
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-mysql:$SHORT_SHA']
+    options:
+      logging: CLOUD_LOGGING_ONLY
+
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest']
+    options:
+      logging: CLOUD_LOGGING_ONLY
 
 images:
   - 'gcr.io/$PROJECT_ID/ecs-laravel-app:$SHORT_SHA'
