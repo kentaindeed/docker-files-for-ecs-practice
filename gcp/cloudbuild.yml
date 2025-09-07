@@ -82,14 +82,6 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest']
 
-images:
-  - 'gcr.io/$PROJECT_ID/ecs-laravel-app:$SHORT_SHA'
-  - 'gcr.io/$PROJECT_ID/ecs-laravel-app:latest'
-  - 'gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA'
-  - 'gcr.io/$PROJECT_ID/ecs-laravel-nginx:latest'
-  - 'gcr.io/$PROJECT_ID/ecs-laravel-mysql:$SHORT_SHA'
-  - 'gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest'
-
   # Deploy to Cloud Run (deploy nginx image)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -103,6 +95,14 @@ images:
         '--port','8080',
         '--quiet'
       ]
+
+images:
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-app:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-app:latest'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-nginx:latest'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-mysql:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest' 
 
 options:
   logging: CLOUD_LOGGING_ONLY
