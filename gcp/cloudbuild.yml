@@ -59,6 +59,7 @@ images:
   - 'gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest'
 
 # Deploy to Cloud Run (deploy nginx image)
+# デプロイプレビュー中
 #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
 #     entrypoint: gcloud
 #     args:
