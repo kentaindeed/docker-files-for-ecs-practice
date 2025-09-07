@@ -96,25 +96,14 @@ images:
     entrypoint: gcloud
     args:
       [
-        'run','deploy','$_SERVICE_NAME',
+        'run','deploy','ecs-laravel',
         '--image','gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA',
         '--platform','managed',
-        '--region','$_REGION',
+        '--region','asia-northeast1',
         '--allow-unauthenticated',
         '--port','8080',
         '--quiet'
       ]
 
-substitutions:
-  _SERVICE_NAME: ecs-laravel
-  _REGION: asia-northeast1
-
 options:
   logging: CLOUD_LOGGING_ONLY
-
-substitutions:
-  _APP_URL: https://example.com
-  _DB_HOST: 127.0.0.1
-  _DB_NAME: app
-  _DB_USER: user
-  _DB_PASSWORD: password
