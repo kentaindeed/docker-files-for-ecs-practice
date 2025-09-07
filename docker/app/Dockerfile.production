@@ -34,6 +34,7 @@ COPY ./src/.env.production /usr/share/nginx/html/.env
 
 # Composerの依存関係をインストール（本番環境用）
 # RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Laravel設定の最適化（パッケージ検出を再実行）
 RUN php artisan package:discover --ansi
