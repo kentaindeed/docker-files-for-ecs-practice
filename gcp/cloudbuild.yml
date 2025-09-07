@@ -6,11 +6,11 @@ steps:
       - -c
       - |
         set -euo pipefail
-        APP_KEY="base64:$(head -c 32 /dev/urandom | base64)"
+        if [ -z "${_APP_KEY:-}" ]; then APP_KEY="base64:$(head -c 32 /dev/urandom | base64)"; else APP_KEY="${_APP_KEY}"; fi
         cat > src/.env.production << 'EOF'
         APP_NAME=Laravel
         APP_ENV=production
-        APP_KEY=${_APP_KEY}
+        APP_KEY=${APP_KEY}
         APP_DEBUG=false
         APP_URL=${_APP_URL}
         LOG_CHANNEL=stack
@@ -90,16 +90,15 @@ images:
   - 'gcr.io/$PROJECT_ID/ecs-laravel-mysql:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest'
 
-# Deploy to Cloud Run (deploy nginx image)
-# デプロイプレビュー中
+  # Deploy to Cloud Run (deploy nginx image)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       [
-        'run','deploy','ecs-laravel',
+        'run','deploy','$_SERVICE_NAME',
         '--image','gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA',
         '--platform','managed',
-        '--region','asia-northeast1',
+        '--region','$_REGION',
         '--allow-unauthenticated',
         '--port','8080',
         '--quiet'
