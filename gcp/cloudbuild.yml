@@ -1,0 +1,59 @@
+steps:
+  # Build app image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-f','docker/app/Dockerfile.production',
+        '-t','gcr.io/$PROJECT_ID/ecs-laravel-app:$SHORT_SHA',
+        '-t','gcr.io/$PROJECT_ID/ecs-laravel-app:latest',
+        '.'
+      ]
+
+  # Push app image (both tags)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-app:$SHORT_SHA']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-app:latest']
+
+  # Build nginx image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-f','docker/nginx/Dockerfile.production',
+        '-t','gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA',
+        '-t','gcr.io/$PROJECT_ID/ecs-laravel-nginx:latest',
+        '.'
+      ]
+
+  # Push nginx image (both tags)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-nginx:latest']
+
+  # Build mysql image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-f','docker/mysql/Dockerfile.production',
+        '-t','gcr.io/$PROJECT_ID/ecs-laravel-mysql:$SHORT_SHA',
+        '-t','gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest',
+        '.'
+      ]
+
+  # Push mysql image (both tags)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-mysql:$SHORT_SHA']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest']
+
+images:
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-app:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-app:latest'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-nginx:latest'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-mysql:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest'
