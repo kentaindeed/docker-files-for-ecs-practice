@@ -10,7 +10,7 @@ steps:
         cat > src/.env.production << 'EOF'
         APP_NAME=Laravel
         APP_ENV=production
-        APP_KEY=${APP_KEY}
+        APP_KEY=${_APP_KEY}
         APP_DEBUG=false
         APP_URL=${_APP_URL}
         LOG_CHANNEL=stack
