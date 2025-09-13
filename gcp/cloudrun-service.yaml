@@ -1,0 +1,25 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: $_SERVICE_NAME
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/container-dependencies: '{"nginx":["app"]}'
+    spec:
+      containers:
+      - name: nginx
+        image: gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+      - name: app
+        image: gcr.io/$PROJECT_ID/ecs-laravel-app:$SHORT_SHA
+        ports:
+        - containerPort: 9000

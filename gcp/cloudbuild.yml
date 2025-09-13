@@ -82,19 +82,17 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push','gcr.io/$PROJECT_ID/ecs-laravel-mysql:latest']
 
-  # Deploy to Cloud Run (deploy nginx image)
+  # Deploy to Cloud Run using multi-container YAML (nginx + app)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
+    entrypoint: bash
     args:
-      [
-        'run','deploy','$_SERVICE_NAME',
-        '--image','gcr.io/$PROJECT_ID/ecs-laravel-nginx:$SHORT_SHA',
-        '--platform','managed',
-        '--region','$_REGION',
-        '--allow-unauthenticated',
-        '--port','8080',
-        '--quiet'
-      ]
+      - -c
+      - |
+        set -euo pipefail
+        gcloud run services replace gcp/cloudrun-service.yaml \
+          --region "$_REGION" --platform managed --quiet
+        gcloud run services add-iam-policy-binding "$_SERVICE_NAME" \
+          --region "$_REGION" --member="allUsers" --role="roles/run.invoker" --quiet
 
 images:
   - 'gcr.io/$PROJECT_ID/ecs-laravel-app:$SHORT_SHA'
